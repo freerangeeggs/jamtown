@@ -20,6 +20,15 @@ function App() {
     gameState.saveCurrentGame(sheet);
   }
 
+  function newGame(): void {
+    gameState.clear();
+
+    //TODO: Find out why setting state does not refresh page
+    setSheet(loadState());
+
+    window.location.reload();
+  }
+
   function wordSectionUpdated(lines: Array<RoundLine>): void {
 
     const newSheet: GameSheetV1 = {
@@ -66,6 +75,7 @@ function App() {
 
   return (
     <div className="App">
+      <button onClick={() => newGame()}>New Game</button>
       <CharacterList></CharacterList>
       <WordSection lines={sheet.lines} onUpdated={wordSectionUpdated}></WordSection>
       <div id="guessSection">
