@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 import './App.css';
-import { GameSheet, RoundLine } from './GameSheet';
+import { GameSheetV1, RoundLine } from './GameSheet';
 import Persistance from './Persistance';
 import { CharacterList } from './components/CharacterList';
 import { WordSection } from './components/WordSection';
@@ -12,17 +12,17 @@ const gameState = new Persistance();
 function App() {
   const [sheet, setSheet] = useState(loadState());
 
-  function loadState(): GameSheet {
+  function loadState(): GameSheetV1 {
     return gameState.loadLastGame();
   }
 
-  function saveState(sheet: GameSheet): void {
+  function saveState(sheet: GameSheetV1): void {
     gameState.saveCurrentGame(sheet);
   }
 
   function wordSectionUpdated(lines: Array<RoundLine>): void {
 
-    const newSheet: GameSheet = {
+    const newSheet: GameSheetV1 = {
       ...sheet,
       lines: lines
     };
@@ -31,13 +31,13 @@ function App() {
       ...newSheet
     });
 
-    saveState(sheet);
+    saveState(newSheet);
   }
 
   function derivedLettersSectionCallback(derivedLetters: Array<string>) {
     console.log(derivedLetters);
 
-    const newSheet: GameSheet = {
+    const newSheet: GameSheetV1 = {
       ...sheet,
       derivedLetters: derivedLetters
     };
@@ -46,18 +46,22 @@ function App() {
       ...newSheet
     });
 
-    saveState(sheet);
+    saveState(newSheet);
   }
 
   function guessSectionCallback(guesses: Array<string>) {
     console.log(guesses);
 
-    setSheet({
+    const newSheet: GameSheetV1 = {
       ...sheet,
       guessLetters: guesses
+    };
+
+    setSheet({
+      ...newSheet
     });
 
-    saveState(sheet);
+    saveState(newSheet);
   }
 
   return (

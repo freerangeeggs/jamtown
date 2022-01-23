@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { GuessLetter } from './GuessLetter';
 
 export enum LetterSectionType {
     DerivedLetters,
@@ -22,11 +21,11 @@ export const LetterSection = (props: LetterSectionProps) => {
         props.callback(newLetters);
     }
 
-    const className = props.type === LetterSectionType.DerivedLetters ? '' : 'darkBg';
+    const className: string = `singleInput big${props.type === LetterSectionType.DerivedLetters ? '' : ' darkBg'}`;
 
     return (
         <div>
-            {letters.map((value, index) => <GuessLetter style={className} key={value[0]} title={index.toString()} value={value} onValueChanged={letterUpdated} />)}
+            {letters.map((value, index) => <input type="text" title={index.toString()} value={value} onChange={(event) => { letterUpdated(index, event.target.value) }} className={className}></input>)}
         </div>
     );
 }

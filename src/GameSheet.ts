@@ -1,7 +1,7 @@
 const MAX_ROUND_LINES: number = 10;
 const MAX_WORD_LENGTH: number = 7;
 
-export type GameSheet = {
+export type GameSheetV1 = {
     lines: Array<RoundLine>;
     derivedLetters: Array<string>;
     guessLetters: Array<string>;
@@ -12,8 +12,8 @@ export type RoundLine = {
     guess: string;
 }
 
-function buildBlankSheet(): GameSheet {
-    let sheet: GameSheet = {
+function buildBlankSheetV1(): GameSheetV1 {
+    let sheet: GameSheetV1 = {
         lines: new Array<RoundLine>(MAX_ROUND_LINES).fill({
             letters: [],
             guess: ''
@@ -25,4 +25,4 @@ function buildBlankSheet(): GameSheet {
     return sheet;
 }
 
-export const blankSheet: GameSheet = buildBlankSheet();
+export const blankSheet: GameSheetV1 = buildBlankSheetV1();

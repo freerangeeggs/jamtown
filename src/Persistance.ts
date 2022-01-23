@@ -1,4 +1,4 @@
-import { GameSheet, blankSheet } from "./GameSheet";
+import { GameSheetV1, blankSheet } from "./GameSheet";
 
 export default class Persistance {
     localStorage: Storage = window.localStorage;
@@ -7,12 +7,12 @@ export default class Persistance {
         localStorage.clear();
     }
 
-    public loadLastGame(): GameSheet {
-        const game = this.localStorage.getItem('game');
+    public loadLastGame(): GameSheetV1 {
+        const game = this.localStorage.getItem('gameV1');
         return game ? JSON.parse(game) : blankSheet;
     }
 
-    public saveCurrentGame(currentGame: GameSheet): void {
-        this.localStorage.setItem('game', JSON.stringify(currentGame));
+    public saveCurrentGame(currentGame: GameSheetV1): void {
+        this.localStorage.setItem('gameV1', JSON.stringify(currentGame));
     }
 }
