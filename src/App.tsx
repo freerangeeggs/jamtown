@@ -75,12 +75,14 @@ function App() {
 
   return (
     <div className="App">
-      <CharacterList></CharacterList>
-      <WordSection lines={sheet.lines} onUpdated={wordSectionUpdated}></WordSection>
-      <div id="guessSection">
-        <LetterSection type={LetterSectionType.DerivedLetters} letters={sheet.derivedLetters} callback={derivedLettersSectionCallback}></LetterSection>
-        <LetterSection type={LetterSectionType.GuessLetters} letters={sheet.guessLetters} callback={guessSectionCallback}></LetterSection>
-      </div>
+      <main>
+        <CharacterList></CharacterList>
+        <WordSection lines={sheet.lines} onUpdated={wordSectionUpdated}></WordSection>
+        <div id="guessSection">
+          <LetterSection type={LetterSectionType.DerivedLetters} letters={sheet.derivedLetters} callback={derivedLettersSectionCallback}></LetterSection>
+          <LetterSection type={LetterSectionType.GuessLetters} letters={sheet.guessLetters} callback={guessSectionCallback}></LetterSection>
+        </div>
+      </main>
       <footer>
         <button type="button" id="newGameButton" onClick={() => newGame()}>New Game</button>
       </footer>
