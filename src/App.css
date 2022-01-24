@@ -134,7 +134,7 @@ footer {
   color: #777777;
 }
 
-#newGameButton {
+button {
   background-color: white;
   color: #777777;
   border: 1px solid #babbbf;

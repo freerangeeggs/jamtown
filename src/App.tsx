@@ -82,7 +82,6 @@ function App() {
         <LetterSection type={LetterSectionType.GuessLetters} letters={sheet.guessLetters} callback={guessSectionCallback}></LetterSection>
       </div>
       <footer>
-        <div className="blurb">Jamtown: Save paper and use this when playing <a target="_new" href="https://czechgames.com/en/letter-jam/">LetterJam</a></div>
         <button type="button" id="newGameButton" onClick={() => newGame()}>New Game</button>
       </footer>
     </div>
