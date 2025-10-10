@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 
-import './App.css';
-import { GameSheetV1, RoundLine } from './GameSheet';
-import Persistance from './Persistance';
-import { CharacterList } from './components/CharacterList';
-import { WordSection } from './components/WordSection';
-import { LetterSection, LetterSectionType } from './components/LetterSection';
+import "./App.css";
+import { GameSheetV1, RoundLine } from "./GameSheet";
+import Persistence from "./Persistence";
+import { CharacterList } from "./components/CharacterList";
+import { WordSection } from "./components/WordSection";
+import { LetterSection, LetterSectionType } from "./components/LetterSection";
 
-const gameState = new Persistance();
+const gameState = new Persistence();
 
 function App() {
   const [sheet, setSheet] = useState(loadState());
@@ -30,14 +30,13 @@ function App() {
   }
 
   function wordSectionUpdated(lines: Array<RoundLine>): void {
-
     const newSheet: GameSheetV1 = {
       ...sheet,
-      lines: lines
+      lines: lines,
     };
 
     setSheet({
-      ...newSheet
+      ...newSheet,
     });
 
     saveState(newSheet);
@@ -48,11 +47,11 @@ function App() {
 
     const newSheet: GameSheetV1 = {
       ...sheet,
-      derivedLetters: derivedLetters
+      derivedLetters: derivedLetters,
     };
 
     setSheet({
-      ...newSheet
+      ...newSheet,
     });
 
     saveState(newSheet);
@@ -63,11 +62,11 @@ function App() {
 
     const newSheet: GameSheetV1 = {
       ...sheet,
-      guessLetters: guesses
+      guessLetters: guesses,
     };
 
     setSheet({
-      ...newSheet
+      ...newSheet,
     });
 
     saveState(newSheet);
@@ -77,14 +76,27 @@ function App() {
     <div className="App">
       <main>
         <CharacterList></CharacterList>
-        <WordSection lines={sheet.lines} onUpdated={wordSectionUpdated}></WordSection>
+        <WordSection
+          lines={sheet.lines}
+          onUpdated={wordSectionUpdated}
+        ></WordSection>
         <div id="guessSection">
-          <LetterSection type={LetterSectionType.DerivedLetters} letters={sheet.derivedLetters} callback={derivedLettersSectionCallback}></LetterSection>
-          <LetterSection type={LetterSectionType.GuessLetters} letters={sheet.guessLetters} callback={guessSectionCallback}></LetterSection>
+          <LetterSection
+            type={LetterSectionType.DerivedLetters}
+            letters={sheet.derivedLetters}
+            callback={derivedLettersSectionCallback}
+          ></LetterSection>
+          <LetterSection
+            type={LetterSectionType.GuessLetters}
+            letters={sheet.guessLetters}
+            callback={guessSectionCallback}
+          ></LetterSection>
         </div>
       </main>
       <footer>
-        <button type="button" id="newGameButton" onClick={() => newGame()}>New Game</button>
+        <button type="button" id="newGameButton" onClick={() => newGame()}>
+          New Game
+        </button>
       </footer>
     </div>
   );
