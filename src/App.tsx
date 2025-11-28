@@ -4,8 +4,8 @@ import "./App.css";
 import { GameSheetV1, RoundLine } from "./GameSheet";
 import Persistence from "./Persistence";
 import { CharacterList } from "./components/CharacterList";
-import { WordSection } from "./components/WordSection";
 import { LetterSection, LetterSectionType } from "./components/LetterSection";
+import { WordSection } from "./components/WordSection";
 
 const gameState = new Persistence();
 
