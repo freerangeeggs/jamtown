@@ -2,85 +2,108 @@
 
 ## Project Overview
 
-This is a React/TypeScript web app for tracking game state during LetterJam gameplay. It's a single-page application built with Create React App that persists game data to browser localStorage.
+React/TypeScript SPA for tracking LetterJam game state. Built with Vite and persists to browser localStorage. No external state management library - uses React hooks and prop drilling.
+
+## Game Context
+
+LetterJam is a cooperative word game where players deduce their secret letters by observing clues from other players. This app tracks:
+- **10 rounds maximum** (`MAX_ROUND_LINES`) - typical game length
+- **9 letter inputs per round** - one per player position (supports 2-6 players, some positions may be empty)
+- **1 guess per round** - player's deduced letter for that round
+- **Derived letters section** (7 letters, `MAX_WORD_LENGTH`) - confirmed letters from successful guesses
+- **Guess letters section** (7 letters) - working hypotheses for remaining letters
+- **Inactive letters** (J/Q/V/X/Z) - not used in the base game
+
+Understanding this context explains why arrays are fixed-size and why the UI has specific input counts.
 
 ## Architecture
 
 ### State Management Pattern
 
-- **Single source of truth**: `GameSheetV1` type in [GameSheet.ts](../src/GameSheet.ts) defines the entire game state
-- **Persistence layer**: [Persistance.ts](../src/Persistance.ts) wraps localStorage with type-safe methods
-- **Top-level state**: [App.tsx](../src/App.tsx) holds state and passes down callbacks for updates
-- State updates follow immutable patterns: spread existing state, update fields, then call `setSheet()` and `saveState()`
+- **Single source of truth**: `GameSheetV1` type in [GameSheet.ts](../src/GameSheet.ts) defines entire game state
+- **Persistence layer**: [Persistance.ts](../src/Persistance.ts) wraps localStorage with type-safe methods (key: `'gameV1'`)
+- **Top-level state**: [App.tsx](../src/App.tsx) holds state via `useState` and passes callbacks down
+- **Immutable updates**: Always spread existing state, modify fields, then call both `setSheet()` and `saveState()` sequentially
 
 ### Component Hierarchy
 
 ```
-App (main state holder)
-├── CharacterList (static alphabet display)
-├── WordSection (manages 10 round lines)
-│   └── WordLine × 10 (individual round input)
-└── LetterSection × 2 (derived letters & guesses)
+App (state holder)
+├── CharacterList (static alphabet, marks J/Q/V/X/Z inactive)
+├── WordSection (aggregates 10 RoundLine updates)
+│   └── WordLine × 10 (9 letter inputs + 1 guess input per round)
+└── LetterSection × 2 (derived letters section + guess letters section)
 ```
 
 ### Data Flow
 
-1. User input triggers component callback (e.g., `letterChanged()`)
-2. Component updates local state and calls parent callback
-3. Parent reconstructs full `GameSheetV1` object with spread operator
-4. Parent calls `setSheet()` and `saveState()` in sequence
-5. Persistance layer writes JSON to localStorage key `'gameV1'`
+1. User types in input → component's `onChange` fires
+2. Component updates local state (e.g., `setLetters()`)
+3. Component immediately calls parent callback with new data
+4. Parent reconstructs `GameSheetV1` via spread operator
+5. Parent calls `setSheet(newSheet)` then `saveState(newSheet)`
 
-## Key Conventions
+## Critical Conventions
 
-### Type Definitions
+### Fixed-Size Array Pattern
 
-- All game state types live in [GameSheet.ts](../src/GameSheet.ts)
-- `RoundLine` = letters array + guess string
-- Fixed-size arrays: 10 round lines, 7-letter words, max 9 letters per line
+All arrays are pre-sized (see [GameSheet.ts](../src/GameSheet.ts)):
+- 10 round lines (`MAX_ROUND_LINES`)
+- 7 letters per word (`MAX_WORD_LENGTH`)  
+- 9 letters max per round line
+
+Initialize with `.fill()` or `.map()` to ensure consistent indexes.
 
 ### Component Props Pattern
 
-Components use explicit type definitions:
+Every stateful component uses this signature:
 
 ```typescript
 type ComponentProps = {
   data: DataType;
-  onUpdated: (newData: DataType) => void;
+  onUpdated: (newData: DataType) => void;  // immediate callback
 };
 ```
 
-### State Update Antipattern
+Example: [WordLine.tsx](../src/components/WordLine.tsx#L4-L7) receives `line: RoundLine` and calls `onUpdated()` on every keystroke.
 
-`newGame()` has a known issue: calls `window.location.reload()` because `setSheet()` doesn't trigger re-render. This needs investigation (see TODO in [App.tsx](../src/App.tsx#L27)).
+### Controlled Inputs + Local State
 
-### Input Handling
+Components like [WordLine](../src/components/WordLine.tsx#L12-L13) maintain local state for inputs AND sync immediately with parent:
 
-- All text inputs use controlled component pattern
-- `onChange` updates local state immediately
-- Callbacks propagate changes up the tree
-- Input classNames include position info (e.g., `'line1'`, `'line2'`)
+```typescript
+const [letters, setLetters] = useState(/* from props */);
+// On change: setLetters(new) then props.onUpdated(new)
+```
+
+This creates "local state buffer + instant sync" pattern throughout codebase.
+
+### CSS Class Naming
+
+Input styling uses position-based classes:
+- `.line1` through `.line9` for round-specific colors (see [App.css](../src/App.css#L38-L78))
+- `.singleInput` for letter inputs, `.big` for result sections
+- `.darkBg` for guess letters section
 
 ## Development Workflow
 
-**Start dev server**: `npm start` (opens http://localhost:3000)
-**Run tests**: `npm test` (interactive watch mode)
-**Build for production**: `npm build` (outputs to `build/`)
+**IMPORTANT**: This project uses Vite, not Create React App (migrated).
 
-## Critical Files
+- **Start dev**: `yarn dev` (opens http://localhost:3000 automatically)
+- **Build**: `yarn build` (TypeScript compile + Vite build → `build/`)
+- **Preview**: `yarn preview` (test production build locally)
+- **Package manager**: Use Yarn exclusively, not npm
 
-- [App.tsx](../src/App.tsx) - Main application logic and state orchestration
-- [GameSheet.ts](../src/GameSheet.ts) - Type definitions and blank state factory
-- [Persistance.ts](../src/Persistance.ts) - localStorage wrapper
-- [WordSection.tsx](../src/components/WordSection.tsx) - Maps over round lines and aggregates updates
+## Known Issues
 
-## Testing & Debugging
+1. **newGame() reload hack**: [App.tsx](../src/App.tsx#L27) uses `window.location.reload()` because `setSheet()` doesn't trigger re-render properly. Root cause unknown - state update should work but doesn't.
 
-- Standard Create React App test setup with Jest and React Testing Library
-- Console logging present in callbacks for debugging state updates (see [App.tsx](../src/App.tsx#L43), [WordSection.tsx](../src/components/WordSection.tsx#L15))
-- Use React DevTools to inspect component state hierarchy
+2. **Console logging**: Debug logs present in [App.tsx](../src/App.tsx#L43) and [WordSection.tsx](../src/components/WordSection.tsx#L15) for tracking state updates. Not production-ready.
 
-## Building
+## Key Files
 
-- Use Yarn for scripts in this project. DO NOT use npm.
-- To start the development server, run `yarn start`.
+- [App.tsx](../src/App.tsx) - State orchestration, persistence calls, component composition
+- [GameSheet.ts](../src/GameSheet.ts) - Type definitions (`GameSheetV1`, `RoundLine`) and `blankSheet` factory
+- [Persistance.ts](../src/Persistance.ts) - localStorage abstraction (load/save/clear)
+- [WordSection.tsx](../src/components/WordSection.tsx) - Aggregates 10 WordLine updates, demonstrates array mapping pattern
+- [WordLine.tsx](../src/components/WordLine.tsx) - Best example of controlled input + callback pattern
