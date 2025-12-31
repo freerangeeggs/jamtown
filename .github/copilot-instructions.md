@@ -90,7 +90,7 @@ Input styling uses position-based classes:
 **IMPORTANT**: This project uses Vite, not Create React App (migrated).
 
 - **Start dev**: `yarn dev` (opens http://localhost:3000 automatically)
-- **Build**: `yarn build` (TypeScript compile + Vite build → `build/`)
+- **Build**: `yarn build` (TypeScript compile + Vite build → `dist/`)
 - **Preview**: `yarn preview` (test production build locally)
 - **Package manager**: Use Yarn exclusively, not npm
 
