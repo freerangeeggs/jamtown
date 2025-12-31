@@ -25,7 +25,7 @@ export const LetterSection = (props: LetterSectionProps) => {
 
     return (
         <div>
-            {letters.map((value, index) => <input type="text" title={index.toString()} value={value} onChange={(event) => { letterUpdated(index, event.target.value) }} className={className}></input>)}
+            {letters.map((value, index) => <input key={index} type="text" title={index.toString()} value={value} onChange={(event) => { letterUpdated(index, event.target.value) }} className={className}></input>)}
         </div>
     );
 }
