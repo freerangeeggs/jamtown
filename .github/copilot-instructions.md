@@ -65,11 +65,11 @@ type ComponentProps = {
 };
 ```
 
-Example: [WordLine.tsx](../src/components/WordLine.tsx#L4-L7) receives `line: RoundLine` and calls `onUpdated()` on every keystroke.
+Example: [WordLine.tsx](../src/components/WordLine.tsx) receives `line: RoundLine` and calls `onUpdated()` on every keystroke.
 
 ### Controlled Inputs + Local State
 
-Components like [WordLine](../src/components/WordLine.tsx#L12-L13) maintain local state for inputs AND sync immediately with parent:
+Components like [WordLine](../src/components/WordLine.tsx) maintain local state for inputs AND sync immediately with parent:
 
 ```typescript
 const [letters, setLetters] = useState(/* from props */);
