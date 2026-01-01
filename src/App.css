@@ -25,13 +25,12 @@ input {
 }
 
 .wordChunk {
-  width: auto;
+  width: 100%;
   padding: 0px 5px;
 }
 
 .singleInput {
   height: 2.5em;
-  width: 1.5em;
   text-align: center;
   margin: 1px;
   font-weight: bold;
@@ -80,7 +79,6 @@ input {
 .line9 {
   background-color: rgb(207, 210, 209);
   border-color: transparent;
-  width: 3em;
 }
 
 .big {
@@ -93,13 +91,9 @@ input {
   background-color: rgb(207, 210, 209);
 }
 
-#guessSection {
-  margin-top: 10px;
-}
-
 .guesses {
   height: 2.5em;
-  width: 6em;
+
   border: 1px solid #dadbdf;
   margin: 1px;
   font-weight: bold;
